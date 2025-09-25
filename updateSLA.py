@@ -7,13 +7,14 @@ from collections import Counter
 from openpyxl import load_workbook
 from openpyxl.worksheet.table import Table
 import win32com.client
+from time import sleep
 
 # Instructions based on https://byu.instructure.com/courses/1026/pages/sla-update-tutorial
 
 # Key variables
-templatePath = r"C:\Users\wywyguy\Box\Accessibility Shared Folder\Team Member Folders\Wyatt\Programs\SLA Automation\SLA Report Template.xlsx"
-mainReportPath = r"C:\Users\wywyguy\Box\Accessibility Shared Folder\Team Member Folders\Wyatt\Programs\SLA Automation\SLA Report Overview.xlsx"
-logPath = r"C:\Users\wywyguy\Box\Accessibility Shared Folder\Team Member Folders\Wyatt\Programs\SLA Automation\SLA Update Program Log.txt"
+templatePath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Report Template.xlsx"
+mainReportPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Report Overview.xlsx"
+logPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Update Program Log.txt"
 
 # Function to log errors and warnings
 def log(message):
@@ -166,27 +167,29 @@ try:
             for row in reversed(toDelete):
                 ws.delete_rows(row)
             for tbl in ws.tables.values():
-                last_row = ws.max_row
-                tbl.ref=f"A2:I{last_row}"
+                lastRow = ws.max_row
+                tbl.ref=f"A2:I{lastRow+1 if lastRow <= 2 else lastRow}"
         else:
             log(f"Warning: Sheet {sheet} not found in SLA Report.")
     wb["Overview"]["B4"] = f"{now.strftime('%B %Y')} SLA Report Overview"
     wb.save(reportPath)
 
     # Step 6: Move the montly report to its designated location
+    yearFolder = os.path.join(r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports", f"{now.strftime('%Y')} SLA")
+    os.makedirs(yearFolder, exist_ok=True)
     newDestination = f"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\{now.strftime('%Y')} SLA\{reportPath}"
     shutil.move(reportPath, newDestination)
     reportPath = newDestination
-    excel = win32com.client.Dispatch("Excel.Application")
+    excel = win32com.client.DispatchEx("Excel.Application")
     excel.Visible = False
+    excel.DisplayAlerts = False
+    sleep(1)
     openReport = excel.Workbooks.Open(reportPath, UpdateLinks=1)
     openReport.Save()
     openReport.Close()
-    excel.Quit()
+    sleep(1)
 
     # Step 7: Add a new row in the main document for the month and link to the monthly report
-    excel = win32com.client.Dispatch("Excel.Application")
-    excel.Visible = False
     mainReport = excel.Workbooks.Open(mainReportPath, UpdateLinks=1)
     mainSheet = mainReport.Sheets("SLA and Time Data")
     lastDataRow = mainSheet.Range("A2").End(-4121).Row
