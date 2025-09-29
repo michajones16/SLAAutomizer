@@ -8,6 +8,8 @@ from openpyxl import load_workbook
 from openpyxl.worksheet.table import Table
 import win32com.client
 from time import sleep
+import argparse
+import calendar
 
 # Instructions based on https://byu.instructure.com/courses/1026/pages/sla-update-tutorial
 
@@ -16,13 +18,18 @@ templatePath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA R
 mainReportPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Report Overview.xlsx"
 logPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Update Program Log.txt"
 
+# Setup for accepting arguments
+parser = argparse.ArgumentParser(description="Run SLA Update Program")
+parser.add_argument("--manual", action="store_true", help="Manually select month for SLA report")
+args = parser.parse_args()
+
 # Function to log errors and warnings
 def log(message):
     with open(logPath, "a", encoding="utf-8") as file:
         timestamp = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
         if message == "BEGIN EXECUTION":
             file.write("\n\n\n")
-        file.write(f"{timestamp}: {message}\n")
+        file.write(f"{timestamp}: {str(message)}\n")
 
 # Determine which data is which and rename files accordingly
 def determineData(paths, now):
@@ -94,25 +101,35 @@ try:
     # Step 1: Copy the SLA report template
     downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
     os.chdir(downloads_path)
-    now = datetime.now()
-    reportPath=f"{now:%Y-%m} - SLA Report.xlsx"
+    actualNow = datetime.now()
+    lastMonthNow = (actualNow.replace(day=1) - pd.Timedelta(days=1))
+    if args.manual:
+        try:
+            year = int(input("Enter year (e.g., 2025): "))
+            month = int(input("Enter month (1-12): "))
+            last_day = calendar.monthrange(year, month)[1]
+            lastMonthNow = datetime(year, month, last_day)
+        except Exception as e:
+            log(f"ERROR: Invalid manual date input. {e}")
+            raise
+    reportPath=f"{lastMonthNow:%Y-%m} - SLA Report.xlsx"
     shutil.copy2(templatePath, reportPath)
 
     # Step 2: Rename downloaded files according to contents of column I
     defaultPaths=[
-        f"All Tasks Report - {now.strftime('%d %b %Y')}.xlsx",
-        f"All Tasks Report - {now.strftime('%d %b %Y')} (1).xlsx",
-        f"All Tasks Report - {now.strftime('%d %b %Y')} (2).xlsx",
-        f"All Tasks Report - {now.strftime('%d %b %Y')} (3).xlsx"
+        f"All Tasks Report - {actualNow.strftime('%d %b %Y')}.xlsx",
+        f"All Tasks Report - {actualNow.strftime('%d %b %Y')} (1).xlsx",
+        f"All Tasks Report - {actualNow.strftime('%d %b %Y')} (2).xlsx",
+        f"All Tasks Report - {actualNow.strftime('%d %b %Y')} (3).xlsx"
     ]
-    determineData(defaultPaths, now)
+    determineData(defaultPaths, lastMonthNow)
 
     # Step 3: Remove irregular tasks
     paths = {
-        f"{now.strftime('%Y-%m')} - SLA Prototypes.xlsx": "Prototype Review - Accessibility",
-        f"{now.strftime('%Y-%m')} - SLA 50s.xlsx": "50% Review - Accessibility",
-        f"{now.strftime('%Y-%m')} - SLA PSIAs.xlsx": "Complete PSIA (Post-Supplier Inspection—Accessibility)",
-        f"{now.strftime('%Y-%m')} - SLA Peer Verifications.xlsx": "Complete a Peer Verification"
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA Prototypes.xlsx": "Prototype Review - Accessibility",
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA 50s.xlsx": "50% Review - Accessibility",
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA PSIAs.xlsx": "Complete PSIA (Post-Supplier Inspection—Accessibility)",
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA Peer Verifications.xlsx": "Complete a Peer Verification"
     }
     for path, expected in paths.items():
         if os.path.exists(path):
@@ -138,10 +155,10 @@ try:
         25: 'H'  # Z -> H
     }
     sheetMapping = {
-        f"{now.strftime('%Y-%m')} - SLA Prototypes.xlsx": "Prototypes",
-        f"{now.strftime('%Y-%m')} - SLA 50s.xlsx": "50% Reviews",
-        f"{now.strftime('%Y-%m')} - SLA PSIAs.xlsx": "PSIAs",
-        f"{now.strftime('%Y-%m')} - SLA Peer Verifications.xlsx": "Peer Verifications"
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA Prototypes.xlsx": "Prototypes",
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA 50s.xlsx": "50% Reviews",
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA PSIAs.xlsx": "PSIAs",
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA Peer Verifications.xlsx": "Peer Verifications"
     }
     for path in paths:
         if os.path.exists(path):
@@ -171,13 +188,13 @@ try:
                 tbl.ref=f"A2:I{lastRow+1 if lastRow <= 2 else lastRow}"
         else:
             log(f"Warning: Sheet {sheet} not found in SLA Report.")
-    wb["Overview"]["B4"] = f"{now.strftime('%B %Y')} SLA Report Overview"
+    wb["Overview"]["B4"] = f"{lastMonthNow.strftime('%B %Y')} SLA Report Overview"
     wb.save(reportPath)
 
     # Step 6: Move the montly report to its designated location
-    yearFolder = os.path.join(r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports", f"{now.strftime('%Y')} SLA")
+    yearFolder = os.path.join(r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports", f"{lastMonthNow.strftime('%Y')} SLA")
     os.makedirs(yearFolder, exist_ok=True)
-    newDestination = f"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\{now.strftime('%Y')} SLA\{reportPath}"
+    newDestination = f"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\{lastMonthNow.strftime('%Y')} SLA\{reportPath}"
     shutil.move(reportPath, newDestination)
     reportPath = newDestination
     excel = win32com.client.DispatchEx("Excel.Application")
@@ -194,7 +211,7 @@ try:
     mainSheet = mainReport.Sheets("SLA and Time Data")
     lastDataRow = mainSheet.Range("A2").End(-4121).Row
     mainSheet.Rows(lastDataRow).Insert()
-    mainSheet.Cells(lastDataRow, 1).Value = now.strftime('%b-%y')
+    mainSheet.Cells(lastDataRow, 1).Value = lastMonthNow.strftime('%m/%d/%Y')
     sourceCells = [ # Cells from monthly report Overview page
         "C13", "C14", "C10",
         "F13", "F14", "F10",
@@ -203,7 +220,7 @@ try:
     ]
     for i, cellRef in enumerate(sourceCells):
         targetCol = i + 2
-        formula = f"='N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\{now.strftime('%Y')} SLA\[{now.strftime('%Y-%m')} - SLA Report.xlsx]Overview'!${sourceCells[i][0]}${sourceCells[i][1:]}"
+        formula = f"='N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\{lastMonthNow.strftime('%Y')} SLA\[{lastMonthNow.strftime('%Y-%m')} - SLA Report.xlsx]Overview'!${sourceCells[i][0]}${sourceCells[i][1:]}"
         mainSheet.Cells(lastDataRow, targetCol).Formula = formula
     mainReport.Save()
     mainReport.Close()

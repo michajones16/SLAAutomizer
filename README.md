@@ -59,13 +59,26 @@ To use the Tampermonkey script to download the 4 files from Teamwork, these step
 
 # What is the purpose of each file?
 
-| Document                               | Purpose                                                                                                          |
-|----------------------------------------|------------------------------------------------------------------------------------------------------------------|
-|`README.md`                             | The file you are currently reading, which contains instructions for using this program.                          |
-|`Generate Monthly SLA Report`           | This shortcut simply runs the updateSLA.py file when you double click it.                                        |
-|`updateSLA.py`                          | Holds the code for the automation of the SLA report.                                                             |
-|`SLA Update Program Log.txt`            | This logs information including warnings and errors from the program in case something goes wrong.               |
-|`SLA Report Overview.xlsx`              | This is the overall SLA report. It shows all historical data from all monthly SLA reports.                       |
-|`(YEAR) SLA Folders`                    | Each folder contains the monthly SLA reports for that year.                                                      |
-|`SLA Report Template.xlsx`              | This is the template that is copied for each monthly report in step 1 of the program.                            |
-|`Download SLA Spreadsheets.user.js`     | This is a Tampermonkey script that can be used in Chrome to automate downloading the 4 Excel files from Teamwork.|
+| Document                               | Purpose                                                                                                               |
+|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+|`README.md`                             | The file you are currently reading, which contains instructions for using this program.                               |
+|`Generate Monthly SLA Report`           | This shortcut simply runs the updateSLA.py file when you double click it.                                             |
+|`Generate Monthly SLA Report (Manual)`  | This shortcut does the same as the other, except it allows you to manually enter which month to create the report for.|
+|`updateSLA.py`                          | Holds the code for the automation of the SLA report.                                                                  |
+|`SLA Update Program Log.txt`            | This logs information including warnings and errors from the program in case something goes wrong.                    |
+|`SLA Report Overview.xlsx`              | This is the overall SLA report. It shows all historical data from all monthly SLA reports.                            |
+|`(YEAR) SLA Folders`                    | Each folder contains the monthly SLA reports for that year.                                                           |
+|`SLA Report Template.xlsx`              | This is the template that is copied for each monthly report in step 1 of the program.                                 |
+|`Download SLA Spreadsheets.user.js`     | This is a Tampermonkey script that can be used in Chrome to automate downloading the 4 Excel files from Teamwork.     |
+|`updateSLAmanually.bat`                 | This is a script file to run the updateSLA.py file using the --manual argument, allowing for manual month entry.      |
+
+
+
+# How to manually add previous months?
+
+The process to add SLA reports for months other than the previous month is very similar:
+1. Download the Excel files for the month you'd like to add. Like in the normal process, they should download with the names `All Tasks Report - YY MMM.xlsx` or `All Tasks Report - YY MMM (1-3).xlsx`.
+2. Double click the shortcut that says `Generate Monthly SLA Report (Manual)`.
+3. When prompted, enter the year and month that you'd like to add the data for.
+4. Open `SLA Report Overview.xlsx`, click the dropdown arrow on the `Month` cell, and select `Sort Oldest to Newest`.
+5. Save the spreadsheet.
