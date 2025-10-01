@@ -11,7 +11,7 @@ Assuming you have already completed the set-up steps below, generating monthly S
 When you double click the `Generate Monthly SLA Report` shortcut, it runs the Python program called `updateSLA.py`, which does the following:
 1. It makes a copy of the `SLA Report Template.xlsx` file in your downloads folder and renames it according to the current month.
 2. It looks through the 4 files you downloaded from Teamwork and renames them depending on what type of task information they contain. (Prototypes, PSIAs, etc.)
-3. It deletes any tasks that don't have the typical task name, which is to clean the data to just include "normal" a11y tasks.
+3. It deletes any tasks that don't have the typical task name, which is to clean the data to just include "normal" accessibility tasks.
 4. It copies the remaining data from those 4 files into their respective sheets on the monthly report that it created in step 1.
 5. It cleans the monthly report, ensuring that there are no extra rows and that the tables fit the size of the data.
 6. It moves the monthly report to the correct folder, creating a folder if it needs to.
@@ -82,3 +82,12 @@ The process to add SLA reports for months other than the previous month is very 
 3. When prompted, enter the year and month that you'd like to add the data for.
 4. Open `SLA Report Overview.xlsx`, click the dropdown arrow on the `Month` cell, and select `Sort Oldest to Newest`.
 5. Save the spreadsheet.
+
+
+
+# Additional Notes
+
+- If you run the `Generate Monthly SLA Report` more than once in a month, it will overwrite the data with the new files you have downloaded. It will still create a new line in the `SLA Report Overview.xlsx` document, so you will need to manually delete one of the duplicate rows.
+- If you run the `Generate Monthly SLA Report (Manual)` and select a month that already has data, it will overwrite the data for that month with the files you have downloaded. It will still reate a new line in the `SLA Report Overview.xlsx` document, so you will need to manually delete one of the duplicate rows.
+- If you input any invalid input into the `Generate Monthly SLA Report (Manual)` pop-up window, it will exit the program with an error and nothing else will happen.
+- If you don't end up with the monthly report or new row in `SLA Report Overview.xlsx`, check the `SLA Update Program Log.txt` file for any errors. This also means you probably still have the `All Tasks Report` files in your downloads folder.
