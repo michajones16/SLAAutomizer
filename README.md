@@ -11,7 +11,7 @@ Assuming you have already completed the set-up steps below, generating monthly S
 When you double click the `Generate Monthly SLA Report` shortcut, it runs the Python program called `updateSLA.py`, which does the following:
 1. It makes a copy of the `SLA Report Template.xlsx` file in your downloads folder and renames it according to the current month.
 2. It looks through the 4 files you downloaded from Teamwork and renames them depending on what type of task information they contain. (Prototypes, PSIAs, etc.)
-3. It deletes any tasks that don't have the typical task name, which is to clean the data to just include "normal" accessibility tasks.
+3. It deletes any tasks that don't have the typical task name, which is to clean the data to just include "normal" accessibility tasks, as well as any tasks that have 0 billed minutes.
 4. It copies the remaining data from those 4 files into their respective sheets on the monthly report that it created in step 1.
 5. It cleans the monthly report, ensuring that there are no extra rows and that the tables fit the size of the data.
 6. It moves the monthly report to the correct folder, creating a folder if it needs to.

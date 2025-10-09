@@ -135,8 +135,11 @@ try:
         if os.path.exists(path):
             df = pd.read_excel(path, engine='openpyxl')
             col_i = df['I'] if 'I' in df.columns else df.iloc[:, 8]
-            mask = col_i.dropna().astype(str).str.lower().str.contains(expected.lower(), regex=False, na=False)
-            cleaned_df = df[mask]
+            col_t = df['T'] if 'T' in df.columns else df.iloc[:, 19]
+            mask_i = col_i.dropna().astype(str).str.lower().str.contains(expected.lower(), regex=False, na=False)
+            mask_t = pd.to_numeric(col_t, errors='coerce').fillna(0) > 0
+            combinedMask = mask_i & mask_t
+            cleaned_df = df[combinedMask]
             cleaned_df.to_excel(path, index=False, engine='openpyxl')
             if len(df)-len(cleaned_df) != 0:
                 log(f"Removed {len(df)-len(cleaned_df)} entries from {path}.")
