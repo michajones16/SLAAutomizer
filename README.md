@@ -8,7 +8,7 @@ Assuming you have already completed the set-up steps below, generating monthly S
 
 # What happens when I run this program?
 
-When you double click the `Generate Monthly SLA Report` shortcut, it runs the Python program called `updateSLA.py`, which does the following:
+When you double click the `Generate Monthly SLA Report` shortcut, it runs an executable form of the Python program called `updateSLA.py`, which does the following:
 1. It makes a copy of the `SLA Report Template.xlsx` file in your downloads folder and renames it according to the current month.
 2. It looks through the 4 files you downloaded from Teamwork and renames them depending on what type of task information they contain. (Prototypes, PSIAs, etc.)
 3. It deletes any tasks that don't have the typical task name, which is to clean the data to just include "normal" accessibility tasks, as well as any tasks that have 0 billed minutes.
@@ -23,12 +23,7 @@ When you double click the `Generate Monthly SLA Report` shortcut, it runs the Py
 # How do I set up my computer to use this process?
 
 To use the `Generate Monthly SLA Report` program, these steps must first be followed as setup:
-1. Install Python from the Microsoft Store: [Microsoft Store - Python](https://apps.microsoft.com/detail/9PJPW5LDXLZ5?hl=en-us&gl=US&ocid=pdpshare)
-2. You will need to install several packages for Python that the program uses. To do so, open the windows terminal and type the following: (pressing enter after each line)
-    1. ```pip install pandas```
-    2. ```pip install openpyxl```
-    3. ```pip install pywin32```
-3. Add the SLA folder as a trusted location in Excel:
+1. Add the SLA folder as a trusted location in Excel:
     1. Open Excel.
     2. Click **Options** on bottom left.
     3. Click **Trust Center** from the list.
@@ -39,6 +34,12 @@ To use the `Generate Monthly SLA Report` program, these steps must first be foll
     8. Paste the following in the Path: `\\byu.local\dcedfsroot\isdata\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\`
     9. Check **Subfolders of this location are also trusted**.
     10. Click **OK** on all Excel pop-up windows.
+NOTE: Steps 2 and 3 are no longer required, but may be useful for editing the project:
+2. Install Python from the Microsoft Store: [Microsoft Store - Python](https://apps.microsoft.com/detail/9PJPW5LDXLZ5?hl=en-us&gl=US&ocid=pdpshare)
+3. You will need to install several packages for Python that the program uses. To do so, open the windows terminal and type the following: (pressing enter after each line)
+    1. ```pip install pandas```
+    2. ```pip install openpyxl```
+    3. ```pip install pywin32```
 
 To use the Tampermonkey script to download the 4 files from Teamwork, these steps must first be followed as setup:
 1.  Add the Tampermonkey Chrome extension: [Chrome Extension - Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
@@ -62,9 +63,10 @@ To use the Tampermonkey script to download the 4 files from Teamwork, these step
 | Document                               | Purpose                                                                                                               |
 |----------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
 |`README.md`                             | The file you are currently reading, which contains instructions for using this program.                               |
-|`Generate Monthly SLA Report`           | This shortcut simply runs the updateSLA.py file when you double click it.                                             |
+|`Generate Monthly SLA Report`           | This shortcut simply runs the updateSLA.exe file when you double click it.                                            |
 |`Generate Monthly SLA Report (Manual)`  | This shortcut does the same as the other, except it allows you to manually enter which month to create the report for.|
 |`updateSLA.py`                          | Holds the code for the automation of the SLA report.                                                                  |
+|`updateSLA.exe`                         | This is an executable form of the updateSLA.py file. Having it mitigates downloading Python and dependencies.         |
 |`SLA Update Program Log.txt`            | This logs information including warnings and errors from the program in case something goes wrong.                    |
 |`SLA Report Overview.xlsx`              | This is the overall SLA report. It shows all historical data from all monthly SLA reports.                            |
 |`(YEAR) SLA Folders`                    | Each folder contains the monthly SLA reports for that year.                                                           |
