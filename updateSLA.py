@@ -14,9 +14,9 @@ import calendar
 # Instructions based on https://byu.instructure.com/courses/1026/pages/sla-update-tutorial
 
 # Key variables
-templatePath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Report Template.xlsx"
+templatePath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Automator\SLA Report Template.xlsx"
 mainReportPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Report Overview.xlsx"
-logPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Update Program Log.txt"
+logPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Automator\SLA Update Program Log.txt"
 
 # Setup for accepting arguments
 parser = argparse.ArgumentParser(description="Run SLA Update Program")

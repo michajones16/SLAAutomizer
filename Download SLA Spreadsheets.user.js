@@ -110,10 +110,10 @@ async function downloadSLA() {
                 if (grandparent && !grandparent.classList.contains("selected")) {
                     span.click();
                 }
-                await sleep();
+                await sleep(textMatch == SLAFilters[0] ? 500 : undefined);
                 await waitForElement('div', 'id', 'alltasksWrapper', 10000);
                 await waitForElement('button', 'aria-label', 'More Options');
-                await sleep();
+                await sleep(textMatch == SLAFilters[0] ? 500 : undefined);
                 const moreOptionsBtn = document.querySelector('[aria-label="More Options"]');
                 if (moreOptionsBtn) {
                     moreOptionsBtn.click();
@@ -123,7 +123,7 @@ async function downloadSLA() {
                     continue;
                 }
                 await waitForTextMatch('span', 'Export');
-                await sleep();
+                await sleep(textMatch == SLAFilters[0] ? 500 : undefined);
                 const exportSpan = Array.from(document.querySelectorAll('span')).find(el => el.textContent.trim() === "Export");
                 if (exportSpan) {
                     const mouseOverEvent = new MouseEvent('mouseover', {
