@@ -43,7 +43,7 @@ NOTE: Steps 2 and 3 are no longer required, but may be useful for editing the pr
 
 To use the Tampermonkey script to download the 4 files from Teamwork, these steps must first be followed as setup:
 1.  Add the Tampermonkey Chrome extension: [Chrome Extension - Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
-2.  (Optional) Click the puzzle icon in the upper-right of chrome and pin the Tampermonkey extension.
+2.  (Optional) Click the puzzle icon in the upper-right of Chrome and pin the Tampermonkey extension.
 3.  Right click the Tampermonkey extension -> **Manage extension**.
 4.  Toggle **Developer mode** on in the upper-right corner.
 5.  Toggle **Allow User Scripts** on in the middle of the page.
