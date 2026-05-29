@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         Download SLA Spreadsheets
 // @namespace    http://tampermonkey.net/
-// @version      2025-09-18
+// @version      2026-02-24
 // @description  Automate downloading Excel spreadsheets from Teamwork
 // @author       Wyatt Nilsson
 // @match        https://byuis.teamwork.com/*
 // @icon         https://cdn-lightspeed.teamwork.com/favicon.ico
 // @grant        GM_registerMenuCommand
+// @updateURL    https://raw.githubusercontent.com/WyWyGuy/tampermonkey-auto-a11y-tools-script/main/DownloadSLASpreadsheets.user.js
+// @downloadURL  https://raw.githubusercontent.com/WyWyGuy/tampermonkey-auto-a11y-tools-script/main/DownloadSLASpreadsheets.user.js
 // ==/UserScript==
 
 function sleep(ms = 50) {
@@ -47,7 +49,7 @@ function waitForElement(tagName, attributeName, attributeValue, timeout = 3000) 
         });
         setTimeout(() => {
             observer.disconnect();
-            reject(new Error(`Tampermonekey: Timeout: <${tagName}> with ${attributeName}="${attributeValue}" not found within ${timeout}ms`));
+            reject(new Error(`Tampermonkey: Timeout: <${tagName}> with ${attributeName}="${attributeValue}" not found within ${timeout}ms`));
         }, timeout);
     });
 }
@@ -101,7 +103,7 @@ async function downloadSLA() {
 
     //Loop through SLA filters and click the download button for each
     const failedDownloads = [];
-    const SLAFilters = ["SLA - Prototypes", "SLA - 50% Reviews", "SLA - PSIAs", "SLA - Peer Verifications"];
+    const SLAFilters = ["SLA - Prototypes", "SLA - 50% Reviews", "SLA - PSIAs", "SLA - Peer Reviews"];
     for (const textMatch of SLAFilters) {
         const matchingSpans = Array.from(document.querySelectorAll('span.saved-filter__title')).filter(span => span.textContent.trim().includes(textMatch));
         if (matchingSpans.length > 0) {

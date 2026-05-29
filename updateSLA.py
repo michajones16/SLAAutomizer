@@ -15,7 +15,7 @@ import calendar
 
 # Key variables
 templatePath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Automator\SLA Report Template.xlsx"
-mainReportPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Report Overview.xlsx"
+mainReportPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Report Overview.xlsm"
 logPath = r"N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\SLA Automator\SLA Update Program Log.txt"
 
 # Setup for accepting arguments
@@ -37,7 +37,7 @@ def determineData(paths, now):
         "prototype": "Prototypes",
         "50%": "50s",
         "psia": "PSIAs",
-        "peer": "Peer Verifications"
+        "peer": "Peer Reviews"
     }
 
     fileLabels = {}
@@ -79,8 +79,10 @@ def determineData(paths, now):
 
     knownLabels = [label for label in fileLabels.values() if label]
     if len(set(knownLabels)) != len(knownLabels):
+        log("ERROR: Duplicate file types detected among existing files.")
         raise ValueError("Duplicate file types detected among existing files.")
     if len(fileLabels) != 4:
+        log("ERROR: Total number of files (known + undetermined) must be 4.")
         raise ValueError("Total number of files (known + undetermined) must be 4.")
 
     yearMonth = now.strftime("%Y-%m")
@@ -128,18 +130,19 @@ try:
     paths = {
         f"{lastMonthNow.strftime('%Y-%m')} - SLA Prototypes.xlsx": "Prototype Review - Accessibility",
         f"{lastMonthNow.strftime('%Y-%m')} - SLA 50s.xlsx": "50% Review - Accessibility",
-        f"{lastMonthNow.strftime('%Y-%m')} - SLA PSIAs.xlsx": "Complete PSIA (Post-Supplier Inspection—Accessibility)",
-        f"{lastMonthNow.strftime('%Y-%m')} - SLA Peer Verifications.xlsx": "Complete a Peer Verification"
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA PSIAs.xlsx": "Complete PSIA \\(Post-Supplier Inspection",
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA Peer Reviews.xlsx": "Complete a Peer Review"
     }
     for path, expected in paths.items():
         if os.path.exists(path):
             df = pd.read_excel(path, engine='openpyxl')
             col_i = df['I'] if 'I' in df.columns else df.iloc[:, 8]
             col_t = df['T'] if 'T' in df.columns else df.iloc[:, 19]
-            mask_i = col_i.dropna().astype(str).str.lower().str.contains(expected.lower(), regex=False, na=False)
+            mask_i = col_i.dropna().astype(str).str.lower().str.contains(expected.lower(), regex=True, na=False)
             mask_t = pd.to_numeric(col_t, errors='coerce').fillna(0) > 0
             combinedMask = mask_i & mask_t
             cleaned_df = df[combinedMask]
+            # cleaned_df = cleaned_df.drop_duplicates()
             cleaned_df.to_excel(path, index=False, engine='openpyxl')
             if len(df)-len(cleaned_df) != 0:
                 log(f"Removed {len(df)-len(cleaned_df)} entries from {path}.")
@@ -161,7 +164,7 @@ try:
         f"{lastMonthNow.strftime('%Y-%m')} - SLA Prototypes.xlsx": "Prototypes",
         f"{lastMonthNow.strftime('%Y-%m')} - SLA 50s.xlsx": "50% Reviews",
         f"{lastMonthNow.strftime('%Y-%m')} - SLA PSIAs.xlsx": "PSIAs",
-        f"{lastMonthNow.strftime('%Y-%m')} - SLA Peer Verifications.xlsx": "Peer Verifications"
+        f"{lastMonthNow.strftime('%Y-%m')} - SLA Peer Reviews.xlsx": "Peer Reviews"
     }
     for path in paths:
         if os.path.exists(path):
@@ -223,7 +226,7 @@ try:
     ]
     for i, cellRef in enumerate(sourceCells):
         targetCol = i + 2
-        formula = f"='N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports\{lastMonthNow.strftime('%Y')} SLA\[{lastMonthNow.strftime('%Y-%m')} - SLA Report.xlsx]Overview'!${sourceCells[i][0]}${sourceCells[i][1:]}"
+        formula = f"=IFERROR('N:\\IS\\Quality Assurance\\ACCESSIBILITY\\SLA Monthly Reports\\{lastMonthNow.strftime('%Y')} SLA\\[{lastMonthNow.strftime('%Y-%m')} - SLA Report.xlsx]Overview'!${sourceCells[i][0]}${sourceCells[i][1:]},\"\")"
         mainSheet.Cells(lastDataRow, targetCol).Formula = formula
     mainReport.Save()
     mainReport.Close()

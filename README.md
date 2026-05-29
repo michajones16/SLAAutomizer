@@ -52,7 +52,7 @@ To use the Tampermonkey script to download the 4 files from Teamwork, these step
 8.  Click **Choose File** by "Import from file".
 9.  Navigate to `N:\IS\Quality Assurance\ACCESSIBILITY\SLA Monthly Reports` and select the file `Download SLA Spreadsheets.user.js`.
 10. Click **Install**.
-11. On [Teamwork's task page](https://byuis.teamwork.com/app/everything/tasks), make sure you have 4 SLA filters named `SLA - Prototypes`, `SLA - 50% Reviews`, `SLA - PSIAs`, and `SLA - Peer Verifications`.
+11. On [Teamwork's task page](https://byuis.teamwork.com/app/everything/tasks), make sure you have 4 SLA filters named `SLA - Prototypes`, `SLA - 50% Reviews`, `SLA - PSIAs`, and `SLA - Peer Reviews`.
 12. Setup is now complete. To use the script, click the Tampermonkey extension -> **Download SLA Documents**.
 13. The first time you do this, Chrome may block multiple pop-ups. In this case, click the icon in the address bar and say **Always allow pop-ups and redirects from https꞉//byuis․teamwork․com**.
 
