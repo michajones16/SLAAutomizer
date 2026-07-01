@@ -226,7 +226,8 @@ try:
     ]
     for i, cellRef in enumerate(sourceCells):
         targetCol = i + 2
-        formula = f"=IFERROR('N:\\IS\\Quality Assurance\\ACCESSIBILITY\\SLA Monthly Reports\\{lastMonthNow.strftime('%Y')} SLA\\[{lastMonthNow.strftime('%Y-%m')} - SLA Report.xlsx]Overview'!${sourceCells[i][0]}${sourceCells[i][1:]},\"\")"
+        ref = f"'N:\\IS\\Quality Assurance\\ACCESSIBILITY\\SLA Monthly Reports\\{lastMonthNow.strftime('%Y')} SLA\\[{lastMonthNow.strftime('%Y-%m')} - SLA Report.xlsx]Overview'!${sourceCells[i][0]}${sourceCells[i][1:]}"
+        formula = (f"=IFERROR("f"IF({ref}=\"\",NA(),{ref}),"f"NA())")
         mainSheet.Cells(lastDataRow, targetCol).Formula = formula
     mainReport.Save()
     mainReport.Close()
